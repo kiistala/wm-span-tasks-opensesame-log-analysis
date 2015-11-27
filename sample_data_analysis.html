@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Analysis of OpenSesame log files</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Analysis of OpenSesame log files</h1>
+
+<h2>Part 1: Read the log files into R</h2>
+
+<pre><code class="r"># this is the directory where the zip file gets unzipped to
+datadir &lt;- &#39;data&#39;
+
+unzip(&quot;sample_data.zip&quot;, exdir=datadir)
+</code></pre>
+
+<pre><code class="r">library(plyr)
+
+# function first:
+
+read_csv_filename &lt;- function(filename)
+{
+  tryCatch( 
+  {  
+    assign(&quot;ret&quot;, read.csv(filename, header = TRUE, row.names=NULL, stringsAsFactors=FALSE), envir=.GlobalEnv) 
+  },
+  warning = function( w )
+  {
+     print()# dummy warning function to suppress the output of warnings
+  },
+  error = function( err ) 
+  {
+    print(paste(&quot;Could not read data from&quot;, filename, &quot;: &quot;, err))
+  })
+
+  ret$Source &lt;- filename
+  ret
+}
+
+filenames &lt;- dir(datadir, pattern = &#39;*.csv&#39;, full.names = TRUE)
+length(filenames)
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r">myData &lt;- ldply(filenames, read_csv_filename)
+
+head(myData)
+</code></pre>
+
+<pre><code>##   correct_letters correct_responseStr entered_text given_name letter
+## 1            &lt;NA&gt;                &lt;NA&gt;            7         NA   &lt;NA&gt;
+## 2            &lt;NA&gt;                &lt;NA&gt;           78         NA   &lt;NA&gt;
+## 3            &lt;NA&gt;                &lt;NA&gt;          787         NA   &lt;NA&gt;
+## 4            &lt;NA&gt;                &lt;NA&gt;         7877         NA   &lt;NA&gt;
+## 5            &lt;NA&gt;                &lt;NA&gt;         7877         NA   &lt;NA&gt;
+## 6            &lt;NA&gt;                &lt;NA&gt;         7877         NA   &lt;NA&gt;
+##   letters_entered level responseString response_TrueFalse_choice
+## 1              NA    NA           &lt;NA&gt;                        NA
+## 2              NA    NA           &lt;NA&gt;                        NA
+## 3              NA    NA           &lt;NA&gt;                        NA
+## 4              NA    NA           &lt;NA&gt;                        NA
+## 5              NA    NA           &lt;NA&gt;                        NA
+## 6              NA    NA           &lt;NA&gt;                        NA
+##   response_number_choice response_response response_time_TrueFalse_choice
+## 1                     NA                NA                             NA
+## 2                     NA                NA                             NA
+## 3                     NA                NA                             NA
+## 4                     NA                NA                             NA
+## 5                     NA                NA                             NA
+## 6                     NA                NA                             NA
+##   response_time_number_choice response_time_ready_to_begin
+## 1                          NA                           NA
+## 2                          NA                           NA
+## 3                          NA                           NA
+## 4                          NA                           NA
+## 5                          NA                           NA
+## 6                          NA                           NA
+##   response_time_response rlevel rrepetition rwrong_answers sentenceText
+## 1                     NA     NA          NA             NA         &lt;NA&gt;
+## 2                     NA     NA          NA             NA         &lt;NA&gt;
+## 3                     NA     NA          NA             NA         &lt;NA&gt;
+## 4                     NA     NA          NA             NA         &lt;NA&gt;
+## 5                     NA     NA          NA             NA         &lt;NA&gt;
+## 6                     NA     NA          NA             NA         &lt;NA&gt;
+##   sentenceTrue sentence_number subject_nr time_dummy_delay
+## 1           NA              NA        888               NA
+## 2           NA              NA        888               NA
+## 3           NA              NA        888               NA
+## 4           NA              NA        888               NA
+## 5           NA              NA        888               NA
+## 6           NA              NA        888               NA
+##   time_its_over_thank_you time_logger_after_response time_ready_to_begin
+## 1                      NA                      50979                  NA
+## 2                      NA                      51471                  NA
+## 3                      NA                      52142                  NA
+## 4                      NA                      52575                  NA
+## 5                      NA                      53601                  NA
+## 6                      NA                      53607                  NA
+##   time_response time_sentence_and_TF_buttons wrong_answers
+## 1            NA                           NA            NA
+## 2            NA                           NA            NA
+## 3            NA                           NA            NA
+## 4            NA                           NA            NA
+## 5            NA                           NA            NA
+## 6            NA                           NA            NA
+##                 Source
+## 1 data/subject-888.csv
+## 2 data/subject-888.csv
+## 3 data/subject-888.csv
+## 4 data/subject-888.csv
+## 5 data/subject-888.csv
+## 6 data/subject-888.csv
+</code></pre>
+
+<pre><code class="r">tail(myData)
+</code></pre>
+
+<pre><code>##     correct_letters correct_responseStr entered_text given_name letter
+## 340          PRVLSM            c6283574            5         NA       
+## 341          PRVLSM            c6283574           56         NA       
+## 342          PRVLSM            c6283574          567         NA       
+## 343          PRVLSM            c6283574         5678         NA       
+## 344          PRVLSM            c6283574         5678         NA       
+## 345          PRVLSM            c6283574         5678         NA       
+##     letters_entered level responseString response_TrueFalse_choice
+## 340              NA     8       c5283267                         2
+## 341              NA     8       c5283267                         2
+## 342              NA     8       c5283267                         2
+## 343              NA     8       c5283267                         2
+## 344              NA     8       c5283267                         2
+## 345              NA     8       c5283267                         2
+##     response_number_choice response_response
+## 340                     NA                NA
+## 341                     NA                NA
+## 342                     NA                NA
+## 343                     NA                NA
+## 344                     NA                NA
+## 345                     NA                NA
+##     response_time_TrueFalse_choice response_time_number_choice
+## 340                           2942                          NA
+## 341                           2942                          NA
+## 342                           2942                          NA
+## 343                           2942                          NA
+## 344                           2942                          NA
+## 345                           2942                          NA
+##     response_time_ready_to_begin response_time_response rlevel rrepetition
+## 340                           NA                     NA      7           3
+## 341                           NA                     NA      7           3
+## 342                           NA                     NA      7           3
+## 343                           NA                     NA      7           3
+## 344                           NA                     NA      7           3
+## 345                           NA                     NA      7           3
+##     rwrong_answers                    sentenceText sentenceTrue
+## 340              3 Lautaselta syödään patalappuja.            1
+## 341              3 Lautaselta syödään patalappuja.            1
+## 342              3 Lautaselta syödään patalappuja.            1
+## 343              3 Lautaselta syödään patalappuja.            1
+## 344              3 Lautaselta syödään patalappuja.            1
+## 345              3 Lautaselta syödään patalappuja.            1
+##     sentence_number subject_nr time_dummy_delay time_its_over_thank_you
+## 340               7        888               NA                      NA
+## 341               7        888               NA                      NA
+## 342               7        888               NA                      NA
+## 343               7        888               NA                      NA
+## 344               7        888               NA                      NA
+## 345               7        888               NA                      NA
+##     time_logger_after_response time_ready_to_begin time_response
+## 340                     925464                  NA            NA
+## 341                     926136                  NA            NA
+## 342                     926650                  NA            NA
+## 343                     927114                  NA            NA
+## 344                     927990                  NA            NA
+## 345                     927995                  NA            NA
+##     time_sentence_and_TF_buttons wrong_answers               Source
+## 340                       881939             3 data/subject-888.csv
+## 341                       881939             3 data/subject-888.csv
+## 342                       881939             3 data/subject-888.csv
+## 343                       881939             3 data/subject-888.csv
+## 344                       881939             3 data/subject-888.csv
+## 345                       881939             3 data/subject-888.csv
+</code></pre>
+
+<pre><code class="r">sn &lt;- unique(myData$subject_nr)
+sn
+</code></pre>
+
+<pre><code>## [1] 888
+</code></pre>
+
+<pre><code class="r"># leave only the subject number
+# myData$filename &lt;- gsub(&quot;data/subject-&quot;, &quot;&quot;, myData$Source)
+myData$filename &lt;- gsub(&quot;data/subject-&quot;, &quot;&quot;, myData$Source)
+myData$filename &lt;- gsub(&quot;.csv&quot;, &quot;&quot;, myData$filename)
+</code></pre>
+
+<p>Unique subject numbers:</p>
+
+<pre><code class="r">sn &lt;- unique(myData$subject_nr)
+length(sn)
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<hr/>
+
+<h2>Part 2: Reading Span Scoring</h2>
+
+<p>We&#39;ll make a new data.frame where we collect subject scores.</p>
+
+<pre><code class="r">results &lt;- data.frame()
+nrow(results)
+</code></pre>
+
+<pre><code>## [1] 0
+</code></pre>
+
+<h3>Functions for Reading Span Scoring</h3>
+
+<pre><code class="r">subject_r &lt;- function(s)
+{
+  df &lt;- subset(myData, subject_nr == s)
+  df &lt;- df[!is.na(df$response_TrueFalse_choice),]
+  return(df)
+}
+
+rspan_results &lt;- function(rspan_df)
+{
+  rdf &lt;- data.frame()
+
+  for (Rlevel in 2:10)
+  {
+    for (Rrep in 1:3)
+    {
+      # temporary data.frame 
+      df &lt;- tail( rspan_df[rspan_df$rwrong_answers &lt; 3 &amp; rspan_df$rlevel==Rlevel &amp; rspan_df$rrepetition==Rrep, ], 1)
+
+      # end loop if empty
+      if (nrow(df) == 0) {break}
+
+      rdf &lt;- rbind(rdf, df)
+
+      # just display:
+      # print(paste(df$rlevel, df$rrepetition, df$entered_text, df$correct_letters))
+
+      # count the points
+      # print(df$entered_text == df$correct_letters)
+      # print(length(df$correct_letters))
+
+      # count how many letters are in a correct position
+      # print(df$correct_letters)
+
+      # partial-credit unit scoring
+      # e.g. 1+1+1 + 1+1+1 + 1+1+0.75 + 1+0.6+0.8 + 0.5+0.5+0
+      # 3 + 3 + 2.75 + 2.4 + 1 / 5*3
+      # 12.15 / 15
+
+      # next: max level
+      # points per answer
+
+      # next: counting span
+    }
+  }
+
+  return (rdf)
+}
+</code></pre>
+
+<hr/>
+
+<h2>Part 3: Counting Span Scoring</h2>
+
+<h3>Functions for Counting SpanÂ Scoring</h3>
+
+<pre><code class="r"># subject&#39;s counting span rows
+
+subject_c &lt;- function(s)
+{
+  df &lt;- subset(myData, subject_nr == s)
+  # a dedicated variable telling the task would&#39;ve helped here
+  df &lt;- df[is.na(df$response_TrueFalse_choice),]
+  return(df)
+}
+
+cspan_results &lt;- function(cspan_df)
+{
+  # a result data.frame
+  rdf &lt;- data.frame()
+
+  for ( uc in unique(na.omit(cspan_df$correct_responseStr)) )
+  {
+    # temporary data.frame 
+    df &lt;- tail( cspan_df[cspan_df$wrong_answers &lt; 3 &amp; cspan_df$correct_responseStr==uc, ], 1)
+
+    # end loop if empty
+    if (nrow(df) == 0) {break}
+
+    rdf &lt;- rbind(rdf, df)
+  }
+
+  return (rdf)
+}
+</code></pre>
+
+<hr/>
+
+<h3>Part 4: Scoring for All subjects</h3>
+
+<p>First Reading Span.</p>
+
+<pre><code class="r">n=0
+
+for (sn in unique(myData$subject_nr))
+{
+  n=n+1
+
+  su_r &lt;- subject_r(sn)
+  if (nrow(su_r) &lt; 30) {next}
+
+  rspan_res &lt;- rspan_results(su_r)
+  rspan_res &lt;- rspan_res[, c(&quot;rlevel&quot;, &quot;entered_text&quot;, &quot;correct_letters&quot;)]
+  names(rspan_res) &lt;- c(&quot;lev&quot;, &quot;answer&quot;, &quot;correct&quot;)
+
+  rspan_res$snr &lt;- sn
+  rspan_res$task &lt;- &quot;ReadingSpan&quot;
+
+  if(nrow(results) == 0)
+  {
+    results &lt;- rspan_res
+  }
+  else
+  {
+    results &lt;- rbind(results, rspan_res)
+  }
+
+  # print(nrow(results))
+}
+</code></pre>
+
+<h2>Same for Counting Span</h2>
+
+<pre><code class="r">n=0
+
+for (sn in unique(myData$subject_nr))
+{
+  n=n+1
+
+  su_c &lt;- subject_c(sn)
+  if (nrow(su_c) &lt; 30) {next}
+
+  cspan_res &lt;- cspan_results(su_c)
+  cspan_res &lt;- cspan_res[, c(&quot;level&quot;, &quot;entered_text&quot;, &quot;correct_responseStr&quot;)]
+
+  # same as in reading span rows
+  names(cspan_res) &lt;- c(&quot;lev&quot;, &quot;answer&quot;, &quot;correct&quot;)
+
+  cspan_res$snr &lt;- sn
+  cspan_res$task &lt;- &quot;CountingSpan&quot;
+
+  if(nrow(results) == 0)
+  {
+    results &lt;- cspan_res
+  }
+  else
+  {
+    results &lt;- rbind(results, cspan_res)
+  }
+
+  # print(nrow(results))
+}
+</code></pre>
+
+<pre><code class="r">summary(results)
+</code></pre>
+
+<pre><code>##       lev           answer            correct               snr     
+##  Min.   :2.000   Length:33          Length:33          Min.   :888  
+##  1st Qu.:3.000   Class :character   Class :character   1st Qu.:888  
+##  Median :4.000   Mode  :character   Mode  :character   Median :888  
+##  Mean   :4.273                                         Mean   :888  
+##  3rd Qu.:6.000                                         3rd Qu.:888  
+##  Max.   :7.000                                         Max.   :888  
+##      task          
+##  Length:33         
+##  Class :character  
+##  Mode  :character  
+##                    
+##                    
+## 
+</code></pre>
+
+<pre><code class="r">nrow( results[grepl(&quot;^c&quot;, results$correct),] )
+</code></pre>
+
+<pre><code>## [1] 18
+</code></pre>
+
+<pre><code class="r">results$correct &lt;- gsub(&quot;^c&quot;, &quot;&quot;, results$correct)
+
+nrow( results[grepl(&quot;^c&quot;, results$correct),] )
+</code></pre>
+
+<pre><code>## [1] 0
+</code></pre>
+
+<p>The results data.frame contains answers for all items.
+Let&#39;s save it for analysis.</p>
+
+<pre><code class="r">saveRDS(results, &quot;results.rds&quot;)
+</code></pre>
+
+<hr/>
+
+<h2>Summary for a subject:</h2>
+
+<pre><code class="r">results$points &lt;- 0
+results$points &lt;- ifelse(results$answer == results$correct, 1, 0)
+
+head(results)
+</code></pre>
+
+<pre><code>##     lev answer correct snr        task points
+## 143   2     PM      PM 888 ReadingSpan      1
+## 151   2     VS      VS 888 ReadingSpan      1
+## 159   2     RK      RK 888 ReadingSpan      1
+## 170   3    HVM     HVM 888 ReadingSpan      1
+## 181   3    RHJ     RHJ 888 ReadingSpan      1
+## 192   3    SHL     SHL 888 ReadingSpan      1
+</code></pre>
+
+<pre><code class="r">tail(results)
+</code></pre>
+
+<pre><code>##     lev  answer correct snr         task points
+## 89    6  473586  473586 888 CountingSpan      1
+## 96    6   58627  586247 888 CountingSpan      0
+## 103   6   38268  384726 888 CountingSpan      0
+## 111   7  574268 5742638 888 CountingSpan      0
+## 120   7 5438264 5368247 888 CountingSpan      0
+## 128   7 5283267 6283574 888 CountingSpan      0
+</code></pre>
+
+<pre><code class="r">new &lt;- aggregate(results$points, by=list(results$snr, results$task), sum)
+head(new)
+</code></pre>
+
+<pre><code>##   Group.1      Group.2  x
+## 1     888 CountingSpan 13
+## 2     888  ReadingSpan  8
+</code></pre>
+
+<pre><code class="r">names(new) &lt;- c(&quot;childid&quot;, &quot;task&quot;, &quot;total&quot;)
+
+cspan &lt;- na.omit (subset(new, task==&quot;CountingSpan&quot;))
+hist (cspan$total)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-11"/> </p>
+
+<pre><code class="r">new_r &lt;- new[new$task==&quot;ReadingSpan&quot;, c(&quot;childid&quot;, &quot;total&quot;)]
+new_c &lt;- new[new$task==&quot;CountingSpan&quot;, c(&quot;childid&quot;, &quot;total&quot;)]
+
+names(new_r) &lt;- c(&quot;childid&quot;, &quot;rspan&quot;)
+names(new_c) &lt;- c(&quot;childid&quot;, &quot;cspan&quot;)
+
+wide &lt;- merge(new_r, new_c)
+nrow(wide)
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r">cor(wide$rspan, wide$cspan, use=&quot;complete.obs&quot;)
+</code></pre>
+
+<pre><code>## [1] NA
+</code></pre>
+
+<pre><code class="r">wide &lt;- na.omit(wide)
+nrow(wide)
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r">head(wide)
+</code></pre>
+
+<pre><code>##   childid rspan cspan
+## 1     888     8    13
+</code></pre>
+
+<pre><code class="r">cor(wide$rspan, wide$cspan)
+</code></pre>
+
+<pre><code>## [1] NA
+</code></pre>
+
+<pre><code class="r">plot(jitter(wide$rspan), jitter(wide$cspan))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-11"/> </p>
+
+</body>
+
+</html>

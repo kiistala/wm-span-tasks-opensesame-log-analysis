@@ -1,0 +1,293 @@
+# Analysis of OpenSesame log files
+
+## Part 1: Read the log files into R
+
+```{r}
+# this is the directory where the zip file gets unzipped to
+datadir <- 'data'
+
+unzip("sample_data.zip", exdir=datadir)
+```
+
+```{r}
+library(plyr)
+
+# function first:
+
+read_csv_filename <- function(filename)
+{
+  tryCatch( 
+  {  
+    assign("ret", read.csv(filename, header = TRUE, row.names=NULL, stringsAsFactors=FALSE), envir=.GlobalEnv) 
+  },
+  warning = function( w )
+  {
+     print()# dummy warning function to suppress the output of warnings
+  },
+  error = function( err ) 
+  {
+    print(paste("Could not read data from", filename, ": ", err))
+  })
+
+  ret$Source <- filename
+  ret
+}
+
+filenames <- dir(datadir, pattern = '*.csv', full.names = TRUE)
+length(filenames)
+
+myData <- ldply(filenames, read_csv_filename)
+
+head(myData)
+tail(myData)
+
+sn <- unique(myData$subject_nr)
+sn
+
+# leave only the subject number
+# myData$filename <- gsub("data/subject-", "", myData$Source)
+myData$filename <- gsub("data/subject-", "", myData$Source)
+myData$filename <- gsub(".csv", "", myData$filename)
+```
+
+Unique subject numbers:
+
+```{r cache=FALSE}
+sn <- unique(myData$subject_nr)
+length(sn)
+```
+
+----
+
+## Part 2: Reading Span Scoring
+
+We'll make a new data.frame where we collect subject scores.
+
+```{r}
+results <- data.frame()
+nrow(results)
+```
+
+### Functions for Reading Span Scoring
+
+```{r}
+
+subject_r <- function(s)
+{
+  df <- subset(myData, subject_nr == s)
+  df <- df[!is.na(df$response_TrueFalse_choice),]
+  return(df)
+}
+
+rspan_results <- function(rspan_df)
+{
+  rdf <- data.frame()
+
+  for (Rlevel in 2:10)
+  {
+    for (Rrep in 1:3)
+    {
+      # temporary data.frame 
+      df <- tail( rspan_df[rspan_df$rwrong_answers < 3 & rspan_df$rlevel==Rlevel & rspan_df$rrepetition==Rrep, ], 1)
+
+      # end loop if empty
+      if (nrow(df) == 0) {break}
+
+      rdf <- rbind(rdf, df)
+
+      # just display:
+      # print(paste(df$rlevel, df$rrepetition, df$entered_text, df$correct_letters))
+
+      # count the points
+      # print(df$entered_text == df$correct_letters)
+      # print(length(df$correct_letters))
+
+      # count how many letters are in a correct position
+      # print(df$correct_letters)
+
+      # partial-credit unit scoring
+      # e.g. 1+1+1 + 1+1+1 + 1+1+0.75 + 1+0.6+0.8 + 0.5+0.5+0
+      # 3 + 3 + 2.75 + 2.4 + 1 / 5*3
+      # 12.15 / 15
+
+      # next: max level
+      # points per answer
+
+      # next: counting span
+    }
+  }
+
+  return (rdf)
+}
+
+```
+----
+
+## Part 3: Counting Span Scoring
+
+### Functions for Counting SpanÂ Scoring
+
+```{r}
+
+# subject's counting span rows
+
+subject_c <- function(s)
+{
+  df <- subset(myData, subject_nr == s)
+  # a dedicated variable telling the task would've helped here
+  df <- df[is.na(df$response_TrueFalse_choice),]
+  return(df)
+}
+
+cspan_results <- function(cspan_df)
+{
+  # a result data.frame
+  rdf <- data.frame()
+
+  for ( uc in unique(na.omit(cspan_df$correct_responseStr)) )
+  {
+    # temporary data.frame 
+    df <- tail( cspan_df[cspan_df$wrong_answers < 3 & cspan_df$correct_responseStr==uc, ], 1)
+
+    # end loop if empty
+    if (nrow(df) == 0) {break}
+
+    rdf <- rbind(rdf, df)
+  }
+
+  return (rdf)
+}
+
+```
+
+-----
+
+### Part 4: Scoring for All subjects
+
+First Reading Span.
+
+```{r}
+
+n=0
+
+for (sn in unique(myData$subject_nr))
+{
+  n=n+1
+
+  su_r <- subject_r(sn)
+  if (nrow(su_r) < 30) {next}
+
+  rspan_res <- rspan_results(su_r)
+  rspan_res <- rspan_res[, c("rlevel", "entered_text", "correct_letters")]
+  names(rspan_res) <- c("lev", "answer", "correct")
+
+  rspan_res$snr <- sn
+  rspan_res$task <- "ReadingSpan"
+
+  if(nrow(results) == 0)
+  {
+    results <- rspan_res
+  }
+  else
+  {
+    results <- rbind(results, rspan_res)
+  }
+
+  # print(nrow(results))
+}
+
+```
+
+## Same for Counting Span
+
+```{r}
+
+n=0
+
+for (sn in unique(myData$subject_nr))
+{
+  n=n+1
+
+  su_c <- subject_c(sn)
+  if (nrow(su_c) < 30) {next}
+
+  cspan_res <- cspan_results(su_c)
+  cspan_res <- cspan_res[, c("level", "entered_text", "correct_responseStr")]
+
+  # same as in reading span rows
+  names(cspan_res) <- c("lev", "answer", "correct")
+
+  cspan_res$snr <- sn
+  cspan_res$task <- "CountingSpan"
+
+  if(nrow(results) == 0)
+  {
+    results <- cspan_res
+  }
+  else
+  {
+    results <- rbind(results, cspan_res)
+  }
+
+  # print(nrow(results))
+}
+
+```
+
+
+```{r}
+summary(results)
+nrow( results[grepl("^c", results$correct),] )
+
+results$correct <- gsub("^c", "", results$correct)
+
+nrow( results[grepl("^c", results$correct),] )
+```
+
+The results data.frame contains answers for all items.
+Let's save it for analysis.
+
+
+```{r}
+saveRDS(results, "results.rds")
+```
+
+----- 
+
+## Summary for a subject:
+
+```{r}
+
+results$points <- 0
+results$points <- ifelse(results$answer == results$correct, 1, 0)
+
+head(results)
+tail(results)
+
+new <- aggregate(results$points, by=list(results$snr, results$task), sum)
+head(new)
+names(new) <- c("childid", "task", "total")
+
+cspan <- na.omit (subset(new, task=="CountingSpan"))
+hist (cspan$total)
+
+new_r <- new[new$task=="ReadingSpan", c("childid", "total")]
+new_c <- new[new$task=="CountingSpan", c("childid", "total")]
+
+names(new_r) <- c("childid", "rspan")
+names(new_c) <- c("childid", "cspan")
+
+wide <- merge(new_r, new_c)
+nrow(wide)
+
+cor(wide$rspan, wide$cspan, use="complete.obs")
+
+wide <- na.omit(wide)
+nrow(wide)
+
+head(wide)
+
+cor(wide$rspan, wide$cspan)
+plot(jitter(wide$rspan), jitter(wide$cspan))
+```
+
